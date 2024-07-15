@@ -18,6 +18,10 @@ public class ProductService {
     public Page<Product> getAllProducts(Pageable pageable) {
         return productRepository.findAll(pageable);
     }
+    
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
 
     public Product addProduct(Product product) {
         return productRepository.save(product);

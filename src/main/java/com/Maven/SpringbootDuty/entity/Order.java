@@ -2,6 +2,7 @@ package com.Maven.SpringbootDuty.entity;
 
 import java.util.*;
 import java.math.*;
+import java.time.*;
 
 import javax.persistence.*;
 
@@ -17,7 +18,7 @@ public class Order {
     private String customerName;
     private String customerAddress;
     private BigDecimal total = BigDecimal.ZERO;
-    private Date date;
+    private LocalDate date;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
@@ -33,11 +34,11 @@ public class Order {
 		this.id = id;
 	}
 	
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 	

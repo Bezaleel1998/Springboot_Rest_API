@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        .product-list-container {
+            width: 80%;
+            margin: auto;
+            border: 1px solid #000;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="product-list-container">
+        <h1>Product List</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="product-table-body">
+                <!-- Product items will be inserted here -->
+            </tbody>
+        </table>
+        <h2>View Cart</h2>
+        <a href="cart.html">Go to Cart</a>
+    </div>
+
+    <script>
+        async function fetchProducts() {
+            const response = await fetch('http://localhost:9090/api/products/all');
+            const products = await response.json();
+
+            const tableBody = document.getElementById('product-table-body');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            products.forEach(product => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${product.name}</td>
+                    <td>${product.type}</td>
+                    <td>${product.price}</td>
+                    <td>
+                        <input type="number" id="quantity-${product.id}" name="quantity" min="1" value="1">
+                    </td>
+                    <td>
+                        <button onclick="addToCart(${product.id}, '${product.name}', '${product.type}', ${product.price})">Add to Cart</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function addToCart(productId, productName, productType, productPrice) {
+            const quantity = document.getElementById(`quantity-${productId}`).value;
+
+            const cartItem = {
+                productId: productId,
+                productName: productName,
+                productType: productType,
+                productPrice: productPrice,
+                quantity: parseInt(quantity, 10)
+            };
+
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push(cartItem);
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            alert('Product added to cart successfully!');
+        }
+
+        // Fetch products when the page loads
+        window.onload = fetchProducts;
+    </script>
+</body>
+</html>

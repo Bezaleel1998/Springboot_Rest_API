@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Cart</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        .cart-container {
+            width: 80%;
+            margin: auto;
+            border: 1px solid #000;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cart-container">
+        <h1>Order Cart</h1>
+        <a href="productlist.html">Add More Product</a>
+        <div>
+            <label for="customerName">Customer:</label>
+            <input type="text" id="customerName">
+        </div>
+        <div>
+            <label for="address">Address:</label>
+            <input type="text" id="address">
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="cart-table-body">
+                <!-- Cart items will be inserted here -->
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">Total:</td>
+                    <td id="cart-total"></td>
+                </tr>
+            </tfoot>
+        </table>
+        <button onclick="placeOrder()">Place Order</button>
+    </div>
+
+    <script>
+        function loadCart() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const tableBody = document.getElementById('cart-table-body');
+            const cartTotal = document.getElementById('cart-total');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            let total = 0;
+
+            cart.forEach(item => {
+                const row = document.createElement('tr');
+                const itemTotal = item.productPrice * item.quantity;
+                total += itemTotal;
+                row.innerHTML = `
+                    <td>${item.productName}</td>
+                    <td>${item.productType}</td>
+                    <td>${item.productPrice}</td>
+                    <td>${item.quantity}</td>
+                    <td>${itemTotal}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            cartTotal.innerText = total;
+        }
+
+        async function placeOrder() {
+            const customerName = document.getElementById('customerName').value;
+            const address = document.getElementById('address').value;
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            if (cart.length === 0) {
+                alert('Cart is empty!');
+                return;
+            }
+
+            const order = {
+                customerName: customerName,
+                address: address,
+                orderItems: cart
+            };
+
+            const response = await fetch('http://localhost:9090/api/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(order)
+            });
+
+            if (response.ok) {
+                alert('Order placed successfully!');
+                localStorage.removeItem('cart');
+                window.location.href = 'productlist.html';
+            } else {
+                alert('Failed to place order.');
+            }
+        }
+
+        // Load cart when the page loads
+        window.onload = loadCart;
+    </script>
+</body>
+</html>

@@ -24,6 +24,15 @@ public class OrderCartController {
     @Autowired
     private ProductService productService;
 
+    @PostMapping("/add")
+    public ResponseEntity<Order> addProductToCart(@RequestBody AddToCartRequest request) {
+        Order order = orderService.addProductToCart(
+                request.getProductId(),
+                request.getQuantity()
+        );
+        return ResponseEntity.ok(order);
+    }
+    
     @PostMapping("/addjson")
     public ResponseEntity<?> addItemToCart(@RequestBody AddToCartRequest request) {
         try {
@@ -55,21 +64,19 @@ public class OrderCartController {
         }
     }
 
-    @GetMapping("/{orderId}")
-    public ResponseEntity<Order> getOrderCart(@PathVariable Integer orderId) {
-        Optional<Order> orderOpt = orderService.getOrderById(orderId);
-        return orderOpt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping
+    public ResponseEntity<List<OrderItem>> getCartItems() {
+        List<OrderItem> cartItems = orderService.getCartItems();
+        return ResponseEntity.ok(cartItems);
     }
 
-    @PostMapping("/place/{orderId}")
-    public ResponseEntity<String> placeOrder(@PathVariable Integer orderId) {
-        Optional<Order> orderOpt = orderService.getOrderById(orderId);
-        if (orderOpt.isPresent()) {
-            Order order = orderOpt.get();
-            // Implement order placement logic here...
-            return ResponseEntity.ok("Order placed successfully");
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @PostMapping("/submit")
+    public ResponseEntity<Order> submitOrder(@RequestBody OrderSubmissionRequest request) {
+        Order order = orderService.submitOrder(
+                request.getCustomerName(),
+                request.getCustomerAddress()
+        );
+        return ResponseEntity.ok(order);
     }
+
 }

@@ -28,6 +28,10 @@ public class OrderItem {
     private BigDecimal total;
 
     @ManyToOne
+    @JoinColumn(name = "product_id", insertable = false, updatable = false)
+    private Product product;
+    
+    @ManyToOne
     @JoinColumn(name = "order_id", insertable = false, updatable = false)
     private Order order;
     
@@ -58,6 +62,12 @@ public class OrderItem {
 		this.order = order;
 	}
 
+	public Product getProduct() {
+		return product;
+	}
+	public void setProduct(Product product) {
+		this.product = product;
+	}
 	public Integer getQuantity() {
 		return quantity;
 	}

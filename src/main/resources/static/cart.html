@@ -57,6 +57,7 @@
             </tfoot>
         </table>
         <button onclick="placeOrder()">Place Order</button>
+        <button onclick="resetCart()">Reset Cart</button>
     </div>
 
     <script>
@@ -116,6 +117,12 @@
             } else {
                 alert('Failed to place order.');
             }
+        }
+
+        function resetCart() {
+            localStorage.removeItem('cart');
+            loadCart();
+            alert('Cart has been reset.');
         }
 
         // Load cart when the page loads

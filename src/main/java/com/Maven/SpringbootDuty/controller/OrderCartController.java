@@ -25,9 +25,16 @@ public class OrderCartController {
     private OrderService orderService;
 
     @PostMapping("/addjson")
-    public ResponseEntity<Void> addItemToCart(@RequestBody OrderItemRequest orderItemRequest) {
-    	 orderService.addItemToOrder(orderItemRequest.getProductId(), orderItemRequest.getQuantity(), orderItemRequest.getOrderId());
-    	    return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<String> addItemToCart(@RequestBody OrderItemRequest orderItemRequest) {
+    	 orderService.addItemToOrder(
+    			 orderItemRequest.getProductId(), 
+    			 orderItemRequest.getQuantity(), 
+    			 orderItemRequest.getOrderId()
+    			 );
+    	 
+         String responseMessage = "Order item added successfully";
+         
+         return ResponseEntity.status(HttpStatus.CREATED).body(responseMessage);
     }
     
 }

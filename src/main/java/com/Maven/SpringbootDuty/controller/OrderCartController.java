@@ -19,49 +19,15 @@ import com.Maven.SpringbootDuty.service.ProductService;
 @RestController
 @RequestMapping("/api/cart")
 public class OrderCartController {
-
-    private static final Logger logger = LoggerFactory.getLogger(OrderCartController.class);
+	private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
     @Autowired
     private OrderService orderService;
 
-    @Autowired
-    private ProductService productService;
-
     @PostMapping("/addjson")
-    public ResponseEntity<?> addItemToCart(@RequestBody AddToCartRequest request) {
-        logger.info("addItemToCart called with request: {}", request);
-        try {
-            Optional<Product> productOpt = productService.getProductById(request.getProductId());
-            Optional<Order> orderOpt = orderService.getOrderById(request.getOrderId());
-
-            if (productOpt.isPresent() && orderOpt.isPresent()) {
-                Product product = productOpt.get();
-                Order order = orderOpt.get();
-                OrderItem orderItem = new OrderItem();
-                orderItem.setProductId(product.getId());
-                orderItem.setQuantity(request.getQuantity());
-                orderItem.setTotal(product.getPrice().multiply(new BigDecimal(request.getQuantity())));
-                orderItem.setOrderId(order.getId());
-
-                logger.info("Adding order item: {}", orderItem);
-                order.getOrderItems().add(orderItem);
-                order.setTotal(order.getTotal().add(orderItem.getTotal()));
-
-                logger.info("Updating order: {}", order);
-                orderService.createOrder(order);
-
-                logger.info("Order updated successfully: {}", order);
-                return ResponseEntity.ok(order);
-            } else {
-                String errorMessage = "Product or Order not found";
-                logger.error(errorMessage);
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
-            }
-        } catch (Exception e) {
-            logger.error("Error occurred while adding item to cart", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+    public ResponseEntity<Void> addItemToCart(@RequestBody OrderItemRequest orderItemRequest) {
+    	 orderService.addItemToOrder(orderItemRequest.getProductId(), orderItemRequest.getQuantity(), orderItemRequest.getOrderId());
+    	    return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
+    
 }

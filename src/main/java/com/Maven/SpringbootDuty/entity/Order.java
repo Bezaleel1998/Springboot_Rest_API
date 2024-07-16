@@ -12,13 +12,22 @@ import lombok.Data;
 @Entity
 @Table(name = "orders")
 public class Order {
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(name = "customer_name")
     private String customerName;
+
+    @Column(name = "customer_address")
     private String customerAddress;
-    private BigDecimal total = BigDecimal.ZERO;
+
+    @Column(name = "total")
+    private BigDecimal total;
+
+    @Column(name = "date")
     private LocalDate date;
+
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();

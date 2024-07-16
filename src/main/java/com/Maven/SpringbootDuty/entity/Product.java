@@ -14,9 +14,16 @@ public class Product {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "type", nullable = false)
     private String type;
+
+    @Column(name = "price", nullable = false)
     private BigDecimal price;
+
     
     // Getters and Setters
     

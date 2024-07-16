@@ -27,8 +27,8 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Optional<Product> getProductById(Integer id) {
-        return productRepository.findById(id);
+    public Optional<Product> getProductById(Integer productId) {
+        return productRepository.findById(productId);
     }
     
 }

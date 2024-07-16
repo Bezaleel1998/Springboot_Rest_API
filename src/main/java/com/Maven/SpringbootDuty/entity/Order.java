@@ -20,11 +20,10 @@ public class Order {
     private BigDecimal total = BigDecimal.ZERO;
     private LocalDate date;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     // Getters and Setters
-    
     
 	public Integer getId() {
 		return id;

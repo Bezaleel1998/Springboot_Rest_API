@@ -56,7 +56,7 @@
                 </tr>
             </tfoot>
         </table>
-        <button onclick="placeOrder()">Place Order</button>
+        <button onclick="createOrder()">Place Order</button>
         <button onclick="resetCart()">Reset Cart</button>
     </div>
 
@@ -86,7 +86,7 @@
             cartTotal.innerText = total;
         }
 
-        async function placeOrder() {
+        async function createOrder() {
             const customerName = document.getElementById('customerName').value;
             const address = document.getElementById('address').value;
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -96,37 +96,54 @@
                 return;
             }
 
-            const orderItems = cart.map(item => ({
-                productId: item.productId,
-                quantity: item.quantity,
-                orderId: item.orderId // Ensure orderId is properly set in your frontend logic
-            }));
-
             const order = {
                 customerName: customerName,
-                address: address,
-                orderItems: orderItems
+                customerAddress: address,
+                total: 0, // This will be calculated in the backend
+                date: new Date().toISOString().split('T')[0],
+                orderItems: []
             };
 
-            try {
+            const response = await fetch('http://localhost:9090/api/orders/orderjson', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(order)
+            });
+
+            if (response.ok) {
+                const createdOrder = await response.json();
+                const orderId = createdOrder.id;
+                await addItemsToOrder(orderId, cart);
+                alert('Order placed successfully!');
+                localStorage.removeItem('cart');
+                window.location.href = 'productlist.html';
+            } else {
+                alert('Failed to place order.');
+            }
+        }
+
+        async function addItemsToOrder(orderId, cart) {
+            for (const item of cart) {
+                const orderItem = {
+                    orderId: orderId,
+                    productId: item.productId,
+                    quantity: item.quantity
+                };
+
                 const response = await fetch('http://localhost:9090/api/cart/addjson', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(order)
+                    body: JSON.stringify(orderItem)
                 });
 
-                if (response.ok) {
-                    alert('Order placed successfully!');
-                    localStorage.removeItem('cart');
-                    window.location.href = 'productlist.html'; // Redirect to product list page after successful order placement
-                } else {
-                    alert('Failed to place order.');
+                if (!response.ok) {
+                    alert('Failed to add item to order.');
+                    break;
                 }
-            } catch (error) {
-                console.error('Error placing order:', error);
-                alert('Failed to place order. Please try again.');
             }
         }
 

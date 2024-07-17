@@ -27,6 +27,7 @@
 <body>
     <div class="product-list-container">
         <h1>Product List</h1>
+        <button onclick="logout()">Logout</button>
         <table>
             <thead>
                 <tr>
@@ -91,5 +92,12 @@
         // Fetch products when the page loads
         window.onload = fetchProducts;
     </script>
+    
+        <script>
+        function logout() {
+        	window.location.href = "/LoginForm.html";
+        }
+    </script>
+    
 </body>
 </html>

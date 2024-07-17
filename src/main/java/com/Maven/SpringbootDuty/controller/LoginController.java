@@ -1,5 +1,8 @@
 package com.Maven.SpringbootDuty.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,20 +23,30 @@ public class LoginController {
     private LoginService loginService;
     
     @GetMapping("/login")
-    public String showLoginForm() {
-        return "LoginForm.html";
+    public ModelAndView showLoginForm() {
+    	return new ModelAndView("redirect:/LoginForm.html");
     }
 
     @PostMapping("/login")
     @ResponseBody
-    public String login(@RequestBody LoginRequest loginRequest) {
+    public String login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
         boolean isAuthenticated = loginService.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
         if (isAuthenticated) {
-            // Ideally, you should set a session attribute here
+            request.getSession().setAttribute("username", loginRequest.getUsername());
             return "Login Successful, hello " + loginRequest.getUsername();
         } else {
             return "Invalid username or password";
         }
+    }
+
+    
+    @GetMapping("/logout")
+    public ModelAndView logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return new ModelAndView("redirect:/LoginForm.html");
     }
     
 }

@@ -93,9 +93,20 @@
         window.onload = fetchProducts;
     </script>
     
-        <script>
+    <script>
         function logout() {
-        	window.location.href = "/LoginForm.html";
+            fetch('/logout', {
+                method: 'GET',
+                redirect: 'follow'
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         }
     </script>
     

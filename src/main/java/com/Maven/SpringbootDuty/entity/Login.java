@@ -15,7 +15,7 @@ public class Login {
     private Integer id;
 	private String username;
 	private String password;
-	private String codeUser;
+	private String code_user;
 	private String role;
 	
 	public Integer getId() {
@@ -37,10 +37,10 @@ public class Login {
 		this.password = password;
 	}
 	public String getCodeUser() {
-		return codeUser;
+		return code_user;
 	}
 	public void setCodeUser(String codeUser) {
-		this.codeUser = codeUser;
+		this.code_user = codeUser;
 	}
 	public String getRole() {
 		return role;

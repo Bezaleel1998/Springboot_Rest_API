@@ -27,7 +27,7 @@
 <body>
     <div class="cart-container">
         <h1>Order Cart</h1>
-        <a href="productlist.html">Add More Product</a>
+        <a href="http://localhost:9090/productList.html">Add More Product</a>
         <div>
             <label for="customerName">Customer:</label>
             <input type="text" id="customerName">
@@ -118,7 +118,7 @@
                 await addItemsToOrder(orderId, cart);
                 alert('Order placed successfully!');
                 localStorage.removeItem('cart');
-                window.location.href = 'productlist.html';
+                window.location.href = 'http://localhost:9090/productList.html';
             } else {
                 alert('Failed to place order.');
             }
